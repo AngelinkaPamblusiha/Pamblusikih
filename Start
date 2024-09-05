@@ -1,0 +1,50 @@
+import telegram
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
+from telegram.ext import Updater, CommandHandler, CallbackQueryHandler, CallbackContext
+import random
+
+# Замените TOKEN на свой токен Telegram бота
+TOKEN = '7542124809:AAHf0gta3YJoyTKe_NsLwtiPHQESo32kK0M'
+
+# Создание бота
+bot = telegram.Bot(7542124809:AAHf0gta3YJoyTKe_NsLwtiPHQESo32kK0M)
+
+# Функция, вызываемая при команде /start
+def start(update: Update, context: CallbackContext):
+    # Создание инлайн-кнопок
+    keyboard = [[InlineKeyboardButton("Гарантирую сделку", callback_data='guarantee'),
+                InlineKeyboardButton("Проверить репутацию", callback_data='reputation')]]
+
+    # Создание клавиатуры с инлайн-кнопками
+    reply_markup = InlineKeyboardMarkup(keyboard)
+
+    # Отправка сообщения с инлайн-кнопками
+    context.bot.send_message(chat_id=update.effective_chat.id, text="Я - Бот-Гарант. Чем могу помочь?", reply_markup=reply_markup)
+
+# Функция, вызываемая при нажатии на инлайн-кнопку
+def button(update: Update, context: CallbackContext):
+    query = update.callback_query
+    query.answer()
+
+    # Обработка нажатия на кнопку
+    if query.data == 'guarantee':
+        # Имитация гарантирования сделки
+        context.bot.send_message(chat_id=update.effective_chat.id, text="Я гарантирую вашу сделку. Доверьтесь мне.")
+    elif query.data == 'reputation':
+        # Имитация проверки репутации
+        reputation_score = random.randint(1, 100)
+        context.bot.send_message(chat_id=update.effective_chat.id, text=f"Ваша репутация: {reputation_score}/100.")
+
+# Установка обработчиков команд и кнопок
+def main():
+    updater = Updater(TOKEN, use_context=True)
+    dp = updater.dispatcher
+
+    dp.add_handler(CommandHandler("start", start))
+    dp.add_handler(CallbackQueryHandler(button))
+
+    updater.start_polling()
+    updater.idle()
+
+if __name__ == '__main__':
+    main() 
